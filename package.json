@@ -1,0 +1,40 @@
+{
+  "name": "dsh-skill-draw-system-map",
+  "version": "0.1.0",
+  "description": "DSH skill provider for draw-system-map: editable SVG/PNG transit network maps from official data, CSV or topology input.",
+  "type": "module",
+  "main": "lib/index.js",
+  "icon": "./icon.svg",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:skill": "python3 -m unittest discover -s assets/draw-system-map/tests",
+    "test:all": "npm test && npm run test:skill"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "skill",
+    "transit-map",
+    "svg"
+  ],
+  "license": "CC-BY-SA-4.0"
+}

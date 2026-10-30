@@ -1,0 +1,8 @@
+# dsh-skill-draw-system-map — bundle patch.
+#
+# `dsh plugin --profile web add link:<this directory>` installs the package and
+# appends it to the profile's dsh.profile.bundles. This layer then inserts the
+# skill provider into the composed plugin tree.
+- insert:
+    - id: skill-draw-system-map
+      name: 'dsh-skill-draw-system-map'
