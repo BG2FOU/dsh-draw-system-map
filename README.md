@@ -13,7 +13,7 @@ cd /path/to/dsh-skill-draw-system-map
 dsh plugin --profile web add "link:$PWD"
 ```
 
-安装即启用（包会被追加到 profile 的 `dsh.profile.bundles`，其 `cordis.patch.yml` 再把 provider 插入组合树）。在 HMR 下插件会立即重载；如果不生效，重启一次 DSH Web 即可。
+安装即启用（包会被追加到 profile 的 `dsh.profile.bundles`，其 `cordis.patch.yml` 再把 provider 插入组合树）。如果当前会话的 skill 目录没有立即刷新，重启一次 DSH Web 即可。
 
 卸载：
 
@@ -69,6 +69,12 @@ python3 scripts/export_png.py output/check.svg output/check.png   # 需要本机
 - 不含源目录的 `.gitignore`（由本仓库根目录的 `.gitignore` 统一处理）。
 - `scripts/illustrator/` 与 `references/illustrator-guide.md` 原样保留：`SKILL.md` 明确说明 Illustrator 原生 `.ai` 尚未支持（roadmap），它们只是开发草稿和测试夹具，不影响正常出图。
 - 其余文件与源目录一致。
+
+## 兼容性
+
+在 DSH 0.2.1-rc.5 上验证过：`dsh plugin` 隔离安装、`--dump-config` 组合、真实 `SkillRegistry` 契约、66 个 Python 测试、端到端 SVG/PNG 出图。插件只使用 `ctx.skills.registerProvider`，没有声明 `engines.dsh` 范围；升级 DSH 后若接口变动，重跑 `npm test` 即可发现。
+
+> `npm test` / `npm run test:skill` 面向源码目录；发布用 tarball 按 `files` 白名单打包，不含 `test/` 与生成物。
 
 ## 许可与来源
 
