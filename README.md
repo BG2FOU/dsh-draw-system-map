@@ -1,6 +1,6 @@
 # dsh-skill-draw-system-map
 
-把 [`draw-system-map`](https://github.com/BG2FOU/AMTR-view/tree/main/.agents/skills/draw-system-map) skill 打包成 DSH 插件：一个 **skill provider bundle**。安装后，DSH 的 skill 目录里会出现 `draw-system-map`，模型可以按需加载它，用官方数据、CSV、GTFS 或拓扑数据绘制可编辑的 SVG / PNG 线网图。
+把 [`AMTR-view`](https://github.com/BG2FOU/AMTR-view) 仓库中的 `draw-system-map` skill（位于 `.agents/skills/draw-system-map`）打包成 DSH 插件：一个 **skill provider bundle**。安装后，DSH 的 skill 目录里会出现 `draw-system-map`，模型可以按需加载它，用官方数据、CSV、GTFS 或拓扑数据绘制可编辑的 SVG / PNG 线网图。
 
 - 插件本身零运行时依赖，只 import Node 内置模块。
 - skill 载荷（Markdown、Python 脚本、示例、测试）原样放在 `assets/draw-system-map/`。
@@ -9,7 +9,8 @@
 ## 安装
 
 ```bash
-dsh plugin --profile web add link:/home/bg2fou/GitHub/dsh-skill-draw-system-map
+cd /path/to/dsh-skill-draw-system-map
+dsh plugin --profile web add "link:$PWD"
 ```
 
 安装即启用（包会被追加到 profile 的 `dsh.profile.bundles`，其 `cordis.patch.yml` 再把 provider 插入组合树）。在 HMR 下插件会立即重载；如果不生效，重启一次 DSH Web 即可。
@@ -34,7 +35,8 @@ npm run test:all
 
 ```bash
 cd assets/draw-system-map
-python3 scripts/draw_map.py assets/minimal-network.json output/check.svg
+mkdir -p output
+python3 scripts/draw_map.py assets/minimal-network.json --output output/check.svg
 python3 scripts/export_png.py output/check.svg output/check.png   # 需要本机有 SVG 渲染器
 ```
 

@@ -13,6 +13,9 @@
   "files": [
     "lib",
     "assets",
+    "!assets/**/__pycache__",
+    "!assets/**/*.pyc",
+    "!assets/**/output",
     "cordis.patch.yml",
     "icon.svg",
     "README.md",

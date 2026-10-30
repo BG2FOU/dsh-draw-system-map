@@ -52,7 +52,10 @@ test("lists one bundled draw-system-map candidate", async () => {
   assert.deepEqual(candidate.invocation, { modelInvocable: true, userInvocable: true });
 
   // The description must be the real frontmatter value, not a placeholder.
-  const expectedDescription = JSON.parse(/^description:\s*(".*")\s*$/mu.exec(rawSkill)[1]);
+  const descriptionValue = /^description:\s*(.*)$/mu.exec(rawSkill)[1].trim();
+  const expectedDescription = descriptionValue.startsWith('"')
+    ? JSON.parse(descriptionValue)
+    : descriptionValue.replace(/^'(.*)'$/u, "$1");
   assert.equal(candidate.description, expectedDescription);
 
   assert.equal(candidate.resourceBase.kind, "directory");
