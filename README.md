@@ -27,7 +27,7 @@ dsh plugin --profile web remove dsh-skill-draw-system-map
 
 ```bash
 npm test                       # 插件单元测试（fake ctx，不依赖 DSH 安装）
-npm run test:skill             # 在打包后的载荷上跑 skill 自带 66 个 unittest
+npm run test:skill             # 在打包后的载荷上跑 skill 自带 102 个 unittest
 npm run test:all
 ```
 
@@ -59,6 +59,15 @@ python3 scripts/export_png.py output/check.svg output/check.png   # 需要本机
 - `get(candidate, options)`：每次加载都重新读 `SKILL.md` 并去掉 frontmatter，把正文交给模型；支持 `options.signal` 取消。因此改正文、references 或 scripts 后**无需重启**（改 frontmatter 的 description 才需要重载插件）。
 - 候选的 `locator` 是 SKILL.md 的绝对路径；DSH 会把它原样传回 `get()`。
 
+## 载荷同步
+
+插件只做原样打包，不改写 skill 内容；载荷来自 [`AMTR-view`](https://github.com/BG2FOU/AMTR-view) 的 `.agents/skills/draw-system-map` 目录。
+
+- 当前同步至源 skill commit `72c2f86`（2026-10-31，`fix(skill): match reference interchange arrows and refresh map examples`），该提交也是源目录最后一次改动；AMTR-view HEAD 为 `21dad13`。
+- 这一版新增布局模块 `scripts/schematic_layout.py`（八方向主干/支线/环线走廊骨架）与 `scripts/parallel_tracks.py`（共线线路连续平行车道、`station_offsets` 只偏移描边、站心不动），并新增 `tests/test_schematic_layout.py`、`tests/test_parallel_tracks.py`、`tests/test_station_offsets.py`、`tests/test_reference_markers.py`，skill 自带测试由 66 个增至 102 个。
+- 载荷内的换乘箭头样式、SVG 示例、`references/*.md` 与 `assets/previews/*` 也随源一起刷新。
+- 同步方式：用 rsync 从源目录覆盖到 `assets/draw-system-map/`，排除 `output/`、`__pycache__/`、`*.pyc` 和源目录的 `.gitignore`，再跑 `npm test` 与 `npm run test:skill` 验收。
+
 ## 相对路径与可移植性
 
 `SKILL.md` 里的命令和链接都相对 skill 目录书写（`scripts/...`、`references/...`、`assets/...`）。DSH 会把 `resourceBase` 渲染成 `Base directory for this skill: <绝对路径>`，并提示按该目录解析，所以从任意 cwd 执行都能工作。插件安装到任何位置（`link:` 或解包后的 npm 包）都不需要改脚本。
@@ -68,11 +77,11 @@ python3 scripts/export_png.py output/check.svg output/check.png   # 需要本机
 - 不含 `output/`（620K 生成产物）和 `__pycache__/`、`*.pyc`。
 - 不含源目录的 `.gitignore`（由本仓库根目录的 `.gitignore` 统一处理）。
 - `scripts/illustrator/` 与 `references/illustrator-guide.md` 原样保留：`SKILL.md` 明确说明 Illustrator 原生 `.ai` 尚未支持（roadmap），它们只是开发草稿和测试夹具，不影响正常出图。
-- 其余文件与源目录一致。
+- 其余文件与源目录 `72c2f86` 一致。
 
 ## 兼容性
 
-在 DSH 0.2.1-rc.5 上验证过：`dsh plugin` 隔离安装、`--dump-config` 组合、真实 `SkillRegistry` 契约、66 个 Python 测试、端到端 SVG/PNG 出图。插件只使用 `ctx.skills.registerProvider`，没有声明 `engines.dsh` 范围；升级 DSH 后若接口变动，重跑 `npm test` 即可发现。
+在 DSH 0.2.1-rc.5 上验证过：`dsh plugin` 隔离安装、`--dump-config` 组合、真实 `SkillRegistry` 契约、102 个 Python 测试、端到端 SVG/PNG 出图。插件只使用 `ctx.skills.registerProvider`，没有声明 `engines.dsh` 范围；升级 DSH 后若接口变动，重跑 `npm test` 即可发现。
 
 > `npm test` / `npm run test:skill` 面向源码目录；发布用 tarball 按 `files` 白名单打包，不含 `test/` 与生成物。
 

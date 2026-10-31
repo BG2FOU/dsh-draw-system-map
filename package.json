@@ -1,6 +1,6 @@
 {
   "name": "dsh-skill-draw-system-map",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "DSH skill provider for draw-system-map: editable SVG/PNG transit network maps from official data, CSV or topology input.",
   "type": "module",
   "main": "lib/index.js",
