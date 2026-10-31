@@ -64,6 +64,7 @@ python3 scripts/export_png.py output/check.svg output/check.png   # 需要本机
 插件只做原样打包，不改写 skill 内容；载荷来自 [`AMTR-view`](https://github.com/BG2FOU/AMTR-view) 的 `.agents/skills/draw-system-map` 目录。
 
 - 当前同步至源 skill commit `72c2f86`（2026-10-31，`fix(skill): match reference interchange arrows and refresh map examples`），该提交也是源目录最后一次改动；AMTR-view HEAD 为 `21dad13`。
+- 插件版本 `0.2.0`：本次只换载荷，`lib/index.js` 的 provider 代码未改；用 `link:` 安装的 profile 无需重装，正文/脚本在下次加载时生效。
 - 这一版新增布局模块 `scripts/schematic_layout.py`（八方向主干/支线/环线走廊骨架）与 `scripts/parallel_tracks.py`（共线线路连续平行车道、`station_offsets` 只偏移描边、站心不动），并新增 `tests/test_schematic_layout.py`、`tests/test_parallel_tracks.py`、`tests/test_station_offsets.py`、`tests/test_reference_markers.py`，skill 自带测试由 66 个增至 102 个。
 - 载荷内的换乘箭头样式、SVG 示例、`references/*.md` 与 `assets/previews/*` 也随源一起刷新。
 - 同步方式：用 rsync 从源目录覆盖到 `assets/draw-system-map/`，排除 `output/`、`__pycache__/`、`*.pyc` 和源目录的 `.gitignore`，再跑 `npm test` 与 `npm run test:skill` 验收。
