@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Runs on every commit.
+# 1. lint-staged only formats the files we own; the vendored skill payload
+#    (assets/draw-system-map) must stay byte-identical to the upstream skill.
+# 2. Unit-test the provider before the commit is created.
+# 3. Generated artifacts must never enter the package.
+
+set -e
+
+npx --no-install lint-staged
+
+npm test
+
+if git diff --cached --name-only | grep -Eq '(^|/)(output/|__pycache__/|node_modules/)|\.pyc$|\.tgz$'; then
+  printf '%s\n' "husky: generated artifacts (output/, __pycache__, *.pyc, *.tgz, node_modules) must not be committed" >&2
+  exit 1
+fi

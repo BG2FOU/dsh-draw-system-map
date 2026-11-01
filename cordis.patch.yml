@@ -5,4 +5,4 @@
 # skill provider into the composed plugin tree.
 - insert:
     - id: skill-draw-system-map
-      name: 'dsh-skill-draw-system-map'
+      name: "dsh-skill-draw-system-map"

@@ -1,5 +1,7 @@
 # dsh-skill-draw-system-map
 
+公开仓库：<https://github.com/BG2FOU/dsh-draw-system-map>
+
 把 [`AMTR-view`](https://github.com/BG2FOU/AMTR-view) 仓库中的 `draw-system-map` skill（位于 `.agents/skills/draw-system-map`）打包成 DSH 插件：一个 **skill provider bundle**。安装后，DSH 的 skill 目录里会出现 `draw-system-map`，模型可以按需加载它，用官方数据、CSV、GTFS 或拓扑数据绘制可编辑的 SVG / PNG 线网图。
 
 - 插件本身零运行时依赖，只 import Node 内置模块。
@@ -9,9 +11,12 @@
 ## 安装
 
 ```bash
-cd /path/to/dsh-skill-draw-system-map
+git clone https://github.com/BG2FOU/dsh-draw-system-map.git
+cd dsh-draw-system-map
 dsh plugin --profile web add "link:$PWD"
 ```
+
+> 仓库名是 `dsh-draw-system-map`，包名仍是 `dsh-skill-draw-system-map`；安装命令和 profile 的 `bundles` 都以包名为准。
 
 安装即启用（包会被追加到 profile 的 `dsh.profile.bundles`，其 `cordis.patch.yml` 再把 provider 插入组合树）。如果当前会话的 skill 目录没有立即刷新，重启一次 DSH Web 即可。
 
@@ -31,6 +36,8 @@ npm run test:skill             # 在打包后的载荷上跑 skill 自带 102 �
 npm run test:all
 ```
 
+这些命令同时也是 husky 钩子（`pre-commit` 跑 `npm test`，`pre-push` 跑 `test:all`）与 GitHub Actions 执行的内容，见下文「开发与提交规范」。
+
 端到端（用打包后的脚本真实出图）：
 
 ```bash
@@ -49,8 +56,28 @@ python3 scripts/export_png.py output/check.svg output/check.png   # 需要本机
 ├── icon.svg                        # 插件图标
 ├── assets/draw-system-map/         # skill 本体（SKILL.md、references、scripts、assets、tests）
 ├── test/plugin.test.mjs            # 插件单元测试
+├── .husky/                         # 本地钩子：pre-commit / commit-msg / pre-push
+├── commitlint.config.mjs           # Conventional Commits 校验规则
+├── .lintstagedrc.json              # 提交前只格式化本仓库自有文件
+├── .prettierrc.json                # 格式化配置（.prettierignore 排除 skill 载荷）
+├── .github/workflows/ci.yml        # GitHub Actions：插件测试 + skill unittest
 └── LICENSE                         # CC BY-SA 4.0（沿用上游）
 ```
+
+## 开发与提交规范（husky）
+
+仓库用 [husky](https://typicode.github.io/husky/) 在本地强制检查，克隆后执行 `npm install` 会通过 `prepare` 脚本自动装好钩子（需要 Node.js 20.18+ 与 Python 3）。
+
+| 钩子         | 检查内容                                                                                                                                                                                                                     |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pre-commit` | `lint-staged` 只格式化仓库自有文件（`lib/`、`test/`、README、配置），**不碰** `assets/draw-system-map/` 的 skill 载荷；随后跑 `npm test`；并拒绝提交 `output/`、`__pycache__/`、`*.pyc`、`*.tgz`、`node_modules/` 等生成物。 |
+| `commit-msg` | `commitlint` 校验 [Conventional Commits](https://www.conventionalcommits.org/)，例如 `feat: ...`、`fix: ...`、`docs: ...`；中文标题可用。                                                                                    |
+| `pre-push`   | `npm run test:all`：插件测试 + skill 自带 102 个 unittest，全部通过才允许推送。                                                                                                                                              |
+
+- 不要用 `--no-verify` 绕过；钩子失败说明提交/推送还不满足发布条件。
+- skill 载荷必须与上游目录逐字节一致，因此任何格式化工具都不得作用于 `assets/draw-system-map/**`（已写入 `.prettierignore` 与 `lint-staged` 白名单）。
+- 本地格式化：`npm run format`；只检查不写入：`npm run format:check`。
+- 同样的测试也会在 GitHub Actions（`.github/workflows/ci.yml`）上对每次 push / PR 重跑。
 
 ## 工作原理
 

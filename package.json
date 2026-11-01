@@ -2,6 +2,14 @@
   "name": "dsh-skill-draw-system-map",
   "version": "0.2.0",
   "description": "DSH skill provider for draw-system-map: editable SVG/PNG transit network maps from official data, CSV or topology input.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BG2FOU/dsh-draw-system-map.git"
+  },
+  "homepage": "https://github.com/BG2FOU/dsh-draw-system-map#readme",
+  "bugs": {
+    "url": "https://github.com/BG2FOU/dsh-draw-system-map/issues"
+  },
   "type": "module",
   "main": "lib/index.js",
   "icon": "./icon.svg",
@@ -27,9 +35,12 @@
     }
   },
   "scripts": {
+    "prepare": "husky",
     "test": "node --test test/*.test.mjs",
     "test:skill": "python3 -m unittest discover -s assets/draw-system-map/tests",
-    "test:all": "npm test && npm run test:skill"
+    "test:all": "npm test && npm run test:skill",
+    "format": "prettier --write --ignore-unknown .",
+    "format:check": "prettier --check --ignore-unknown ."
   },
   "keywords": [
     "dsh",
@@ -39,5 +50,12 @@
     "transit-map",
     "svg"
   ],
-  "license": "CC-BY-SA-4.0"
+  "license": "CC-BY-SA-4.0",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.10"
+  }
 }

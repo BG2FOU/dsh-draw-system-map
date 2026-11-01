@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Conventional Commits are mandatory; see commitlint.config.mjs.
+
+npx --no-install commitlint --edit "$1"

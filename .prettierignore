@@ -1,0 +1,10 @@
+# Never reformat the vendored skill payload: it must stay byte-identical to
+# the upstream skill in AMTR-view (.agents/skills/draw-system-map).
+assets/
+
+# Generated or non-owned files
+node_modules/
+package-lock.json
+LICENSE
+.husky/_/
+*.tgz

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Runs before every push: the published payload must pass both the provider
+# tests and the skill's own Python suite.
+
+set -e
+
+npm run test:all
